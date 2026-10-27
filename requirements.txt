@@ -1,0 +1,4 @@
+# HTTPS Security Analyzer - Dependencies
+# Suitable for Python 3.10+ (tested with Python 3.14)
+Flask>=3.0.0
+cryptography>=42.0.0

@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="HTTPS Security Analyzer: College Cryptography project analyzing secure web communication, TLS handshakes, and X.509 digital certificates.">
+    <title>HTTPS Security Analyzer | Cryptography & Digital Certificate Analysis</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Main Stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="cyber-theme">
+
+    <!-- Top Navigation Bar -->
+    <header class="navbar" id="topNav">
+        <div class="nav-container">
+            <div class="brand">
+                <span class="brand-icon">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                    </svg>
+                </span>
+                <div class="brand-text">
+                    <span class="brand-title">HTTPS Security Analyzer</span>
+                    <span class="brand-subtitle">Cryptography &amp; Network Security Project</span>
+                </div>
+            </div>
+
+            <nav class="nav-links">
+                <a href="#analyzer" class="nav-link active">Analyzer</a>
+                <a href="#resultsSection" class="nav-link" id="navLinkResults" style="display:none;">Results</a>
+                <a href="#certificateSection" class="nav-link" id="navLinkCert" style="display:none;">Certificate</a>
+                <a href="#chainSection" class="nav-link">Trust Chain</a>
+                <a href="#handshakeSection" class="nav-link">How HTTPS Works</a>
+                <a href="#conceptsSection" class="nav-link">Crypto Concepts</a>
+                <a href="#vivaSection" class="nav-link">Viva Guide</a>
+            </nav>
+
+            <div class="nav-actions">
+                <span class="badge-academic">College Project</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="main-wrapper">
+
+        <!-- ============================================================= -->
+        <!-- 1. Hero & URL Analyzer Section                                -->
+        <!-- ============================================================= -->
+        <section class="section hero-section" id="analyzer">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <span class="pulse-dot"></span>
+                    <span>Educational Cryptography Tool &bull; TLS / SSL &amp; X.509</span>
+                </div>
+
+                <h1 class="hero-title">
+                    Analyzing Secure Web Communication &amp; <span class="gradient-text">Digital Certificates</span>
+                </h1>
+
+                <p class="hero-description">
+                    Inspect live HTTPS connections to understand how modern web security works.
+                    Examine <strong>TLS handshakes</strong>, <strong>symmetric ciphers</strong>,
+                    <strong>public-key algorithms</strong>, and <strong>X.509 digital certificates</strong>
+                    issued by trusted Certificate Authorities.
+                </p>
+
+                <!-- URL Analysis Form Card -->
+                <div class="analyzer-card">
+                    <form id="analyzeForm" class="analyzer-form" onsubmit="return false;">
+                        <div class="input-wrapper">
+                            <span class="input-prefix-icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <line x1="2" y1="12" x2="22" y2="12"></line>
+                                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                                </svg>
+                            </span>
+                            <input
+                                type="text"
+                                id="urlInput"
+                                class="url-input"
+                                placeholder="Enter HTTPS URL (e.g., https://google.com)"
+                                value="https://google.com"
+                                autocomplete="off"
+                                spellcheck="false"
+                                required
+                            />
+                            <button type="button" id="clearBtn" class="btn-clear" title="Clear input" style="display:none;">&times;</button>
+                        </div>
+
+                        <button type="submit" id="analyzeBtn" class="btn-primary">
+                            <span class="btn-text">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                </svg>
+                                Analyze Security
+                            </span>
+                            <span class="btn-loader" style="display:none;">
+                                <span class="spinner"></span>
+                                Establishing TLS...
+                            </span>
+                        </button>
+                    </form>
+
+                    <!-- Input Help & Sample Chips -->
+                    <div class="samples-wrapper">
+                        <span class="samples-label">Quick Test Targets (Viva Demonstrations):</span>
+                        <div class="sample-chips" id="sampleChips">
+                            <button type="button" class="chip" data-url="https://google.com">
+                                <span class="chip-status status-green"></span> google.com (TLS 1.3)
+                            </button>
+                            <button type="button" class="chip" data-url="https://github.com">
+                                <span class="chip-status status-green"></span> github.com (DigiCert)
+                            </button>
+                            <button type="button" class="chip" data-url="https://cloudflare.com">
+                                <span class="chip-status status-green"></span> cloudflare.com
+                            </button>
+                            <button type="button" class="chip" data-url="https://wikipedia.org">
+                                <span class="chip-status status-green"></span> wikipedia.org
+                            </button>
+                            <button type="button" class="chip chip-test" data-url="https://expired.badssl.com" title="Test expired certificate error handling">
+                                <span class="chip-status status-amber"></span> expired.badssl.com (Expired)
+                            </button>
+                            <button type="button" class="chip chip-test" data-url="https://self-signed.badssl.com" title="Test untrusted self-signed certificate error handling">
+                                <span class="chip-status status-red"></span> self-signed.badssl.com (Self-Signed)
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Error Alert Box -->
+                <div id="errorAlert" class="alert-box alert-error" style="display:none;">
+                    <div class="alert-icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+                    </div>
+                    <div class="alert-content">
+                        <h4 id="errorTitle">Analysis Error</h4>
+                        <p id="errorMessage">Unable to connect to the target website.</p>
+                        <div id="errorDetail" class="alert-detail"></div>
+                    </div>
+                    <button type="button" class="alert-close" onclick="document.getElementById('errorAlert').style.display='none'">&times;</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================= -->
+        <!-- 2. Security Analysis & Results Dashboard                      -->
+        <!-- ============================================================= -->
+        <section class="section results-section" id="resultsSection" style="display:none;">
+            <div class="section-header">
+                <div class="section-title-wrapper">
+                    <span class="section-tag">Inspection Results</span>
+                    <h2 class="section-title">Security &amp; Cryptography Dashboard</h2>
+                    <p class="section-desc" id="resultsTargetLabel">Target Domain: google.com</p>
+                </div>
+                <div class="header-actions">
+                    <button type="button" class="btn-secondary" id="btnExportJson">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                        </svg>
+                        Copy Report JSON
+                    </button>
+                </div>
+            </div>
+
+            <!-- Top Row: Security Score Card & Executive Summary -->
+            <div class="score-card-grid">
+                <!-- Score Gauge Card -->
+                <div class="card score-card">
+                    <div class="score-card-header">
+                        <span class="card-label">Overall Cryptographic Posture</span>
+                        <span class="score-grade-pill" id="scoreGradePill">Grade A+</span>
+                    </div>
+
+                    <div class="score-display">
+                        <div class="score-radial">
+                            <svg class="score-circle-svg" viewBox="0 0 120 120">
+                                <circle class="circle-bg" cx="60" cy="60" r="50"></circle>
+                                <circle class="circle-progress" id="scoreCircleProgress" cx="60" cy="60" r="50"></circle>
+                            </svg>
+                            <div class="score-text">
+                                <span class="score-number" id="scoreVal">--</span>
+                                <span class="score-max">/ 100</span>
+                            </div>
+                        </div>
+
+                        <div class="score-meta">
+                            <h3 class="score-rating" id="scoreRatingText">Calculating...</h3>
+                            <p class="score-summary" id="scoreSummaryText">Analyzing cryptographic parameters...</p>
+                        </div>
+                    </div>
+
+                    <!-- Breakdown Checklist -->
+                    <div class="score-breakdown-wrapper">
+                        <h4 class="breakdown-heading">Security Score Rationale (100 Points):</h4>
+                        <div class="breakdown-list" id="breakdownList">
+                            <!-- Populated dynamically by script.js -->
+                        </div>
+                    </div>
+
+                    <div class="card-footer-disclaimer">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="16" x2="12" y2="12"></line>
+                            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                        </svg>
+                        <span>Educational Cryptography Project: Evaluates TLS parameters and certificate properties.</span>
+                    </div>
+                </div>
+
+                <!-- Handshake Summary & IP Address Card -->
+                <div class="card summary-card">
+                    <div class="card-header-simple">
+                        <h3>Connection &amp; Socket Telemetry</h3>
+                        <span class="badge-status" id="badgeHttpsStatus">Secure</span>
+                    </div>
+
+                    <div class="telemetry-grid">
+                        <div class="telemetry-item">
+                            <span class="telemetry-label">Target Hostname</span>
+                            <span class="telemetry-value font-mono" id="telHostname">--</span>
+                        </div>
+                        <div class="telemetry-item">
+                            <span class="telemetry-label">Resolved IPv4 Address</span>
+                            <span class="telemetry-value font-mono" id="telIp">--</span>
+                        </div>
+                        <div class="telemetry-item">
+                            <span class="telemetry-label">Destination Port</span>
+                            <span class="telemetry-value font-mono" id="telPort">443 (HTTPS)</span>
+                        </div>
+                        <div class="telemetry-item">
+                            <span class="telemetry-label">Transport Protocol</span>
+                            <span class="telemetry-value">TCP / TLS</span>
+                        </div>
+                    </div>
+
+                    <!-- Verification Notice if Failed -->
+                    <div id="verifWarningBox" class="verif-warning" style="display:none;">
+                        <div class="warning-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                                <line x1="12" y1="9" x2="12" y2="13"></line>
+                                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                            </svg>
+                        </div>
+                        <div class="warning-text">
+                            <strong>Certificate Trust Warning:</strong>
+                            <p id="verifWarningMsg">Certificate verification failed.</p>
+                        </div>
+                    </div>
+
+                    <!-- Recommendations List -->
+                    <div class="recommendations-box">
+                        <h4 class="rec-title">Cryptographic Recommendations:</h4>
+                        <ul class="rec-list" id="recList">
+                            <!-- Populated dynamically -->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Key Metric Cards Grid (6 Main Features) -->
+            <div class="metrics-grid">
+
+                <!-- 1. HTTPS Status Card -->
+                <div class="metric-card" id="cardHttps">
+                    <div class="metric-header">
+                        <div class="metric-icon icon-green">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                            </svg>
+                        </div>
+                        <span class="metric-tag tag-green" id="tagHttps">Secure</span>
+                    </div>
+                    <span class="metric-title">HTTPS Status</span>
+                    <span class="metric-main" id="valHttps">Available</span>
+                    <p class="metric-sub">Port 443 listening, encrypted transport layer confirmed.</p>
+                </div>
+
+                <!-- 2. TLS Version Card -->
+                <div class="metric-card" id="cardTls">
+                    <div class="metric-header">
+                        <div class="metric-icon icon-cyan">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                            </svg>
+                        </div>
+                        <span class="metric-tag tag-cyan" id="tagTls">Modern</span>
+                    </div>
+                    <span class="metric-title">TLS Protocol Version</span>
+                    <span class="metric-main font-mono" id="valTls">TLSv1.3</span>
+                    <p class="metric-sub" id="subTls">Provides 1-RTT handshake and mandatory forward secrecy.</p>
+                </div>
+
+                <!-- 3. Cipher Suite Card -->
+                <div class="metric-card" id="cardCipher">
+                    <div class="metric-header">
+                        <div class="metric-icon icon-purple">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="16 18 22 12 16 6"></polyline>
+                                <polyline points="8 6 2 12 8 18"></polyline>
+                            </svg>
+                        </div>
+                        <span class="metric-tag tag-purple" id="tagCipher">AEAD</span>
+                    </div>
+                    <span class="metric-title">Negotiated Cipher Suite</span>
+                    <span class="metric-main font-mono text-sm" id="valCipher">--</span>
+                    <p class="metric-sub" id="subCipher">Authenticated Encryption with Associated Data.</p>
+                </div>
+
+                <!-- 4. Symmetric Encryption & Key Exchange Card -->
+                <div class="metric-card" id="cardCrypto">
+                    <div class="metric-header">
+                        <div class="metric-icon icon-blue">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                            </svg>
+                        </div>
+                        <span class="metric-tag tag-blue" id="tagCrypto">256-bit</span>
+                    </div>
+                    <span class="metric-title">Encryption &amp; Key Exchange</span>
+                    <span class="metric-main text-sm" id="valCrypto">AES-256-GCM</span>
+                    <p class="metric-sub" id="subCrypto">Forward secret ephemeral Diffie-Hellman.</p>
+                </div>
+
+                <!-- 5. Digital Certificate Status Card -->
+                <div class="metric-card" id="cardCert">
+                    <div class="metric-header">
+                        <div class="metric-icon icon-green" id="iconCertWrap">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                            </svg>
+                        </div>
+                        <span class="metric-tag tag-green" id="tagCert">Valid</span>
+                    </div>
+                    <span class="metric-title">Certificate Trust</span>
+                    <span class="metric-main" id="valCert">Valid &amp; Trusted</span>
+                    <p class="metric-sub" id="subCert">Cryptographic signature verified by Root CA.</p>
+                </div>
+
+                <!-- 6. Expiry & CA Card -->
+                <div class="metric-card" id="cardExpiry">
+                    <div class="metric-header">
+                        <div class="metric-icon icon-amber">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                        </div>
+                        <span class="metric-tag tag-amber" id="tagDaysLeft">-- Days</span>
+                    </div>
+                    <span class="metric-title">Certificate Validity Span</span>
+                    <span class="metric-main font-mono text-sm" id="valExpiry">--</span>
+                    <p class="metric-sub" id="subExpiry">Issuer: Certificate Authority</p>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ============================================================= -->
+        <!-- 3. Digital Certificate Analysis Deep-Dive                     -->
+        <!-- ============================================================= -->
+        <section class="section certificate-section" id="certificateSection" style="display:none;">
+            <div class="section-header">
+                <div class="section-title-wrapper">
+                    <span class="section-tag">X.509 Standard</span>
+                    <h2 class="section-title">Digital Certificate Deep Dive</h2>
+                    <p class="section-desc">Detailed examination of identity attributes, cryptographic keys, and signature digests.</p>
+                </div>
+            </div>
+
+            <div class="cert-grid">
+
+                <!-- Left: Subject & Issuer Attributes -->
+                <div class="card cert-attr-card">
+                    <div class="card-header-styled">
+                        <div class="card-header-title">
+                            <span class="card-icon-bullet"></span>
+                            <h3>Subject &amp; Issuer Identity</h3>
+                        </div>
+                        <span class="badge-mini">Authentication</span>
+                    </div>
+
+                    <div class="attr-table">
+                        <div class="attr-row">
+                            <span class="attr-key">Subject Common Name (CN)</span>
+                            <span class="attr-val font-mono" id="certSubjectCN">--</span>
+                        </div>
+                        <div class="attr-row">
+                            <span class="attr-key">Subject Organization (O)</span>
+                            <span class="attr-val" id="certSubjectO">--</span>
+                        </div>
+                        <div class="attr-row">
+                            <span class="attr-key">Subject Country (C)</span>
+                            <span class="attr-val" id="certSubjectC">--</span>
+                        </div>
+                        <div class="attr-row highlight-row">
+                            <span class="attr-key">Issuer Common Name (CN)</span>
+                            <span class="attr-val font-mono" id="certIssuerCN">--</span>
+                        </div>
+                        <div class="attr-row">
+                            <span class="attr-key">Issuer Organization (O)</span>
+                            <span class="attr-val" id="certIssuerO">--</span>
+                        </div>
+                        <div class="attr-row">
+                            <span class="attr-key">Issuer Country (C)</span>
+                            <span class="attr-val" id="certIssuerC">--</span>
+                        </div>
+                        <div class="attr-row">
+                            <span class="attr-key">Valid From (notBefore)</span>
+                            <span class="attr-val font-mono" id="certNotBefore">--</span>
+                        </div>
+                        <div class="attr-row">
+                            <span class="attr-key">Valid Until (notAfter)</span>
+                            <span class="attr-val font-mono" id="certNotAfter">--</span>
+                        </div>
+                        <div class="attr-row">
+                            <span class="attr-key">Serial Number (Hex)</span>
+                            <span class="attr-val font-mono text-xs break-all" id="certSerialHex">--</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Cryptographic Primitives -->
+                <div class="card cert-crypto-card">
+                    <div class="card-header-styled">
+                        <div class="card-header-title">
+                            <span class="card-icon-bullet bullet-cyan"></span>
+                            <h3>Cryptographic Primitives &amp; Hashes</h3>
+                        </div>
+                        <span class="badge-mini">Public Key / Hashing</span>
+                    </div>
+
+                    <div class="crypto-specs-list">
+                        <div class="crypto-spec-box">
+                            <div class="spec-label">Digital Signature Algorithm</div>
+                            <div class="spec-value font-mono" id="certSigAlgo">--</div>
+                            <div class="spec-note">The CA hashes the certificate and encrypts the digest with its private key.</div>
+                        </div>
+
+                        <div class="crypto-spec-box">
+                            <div class="spec-label">Server Public Key Details</div>
+                            <div class="spec-value font-mono" id="certPubKey">--</div>
+                            <div class="spec-note">Used by client to authenticate the server and negotiate ephemeral session keys.</div>
+                        </div>
+
+                        <div class="crypto-spec-box">
+                            <div class="spec-label">SHA-256 Fingerprint (Cryptographic Hash)</div>
+                            <div class="spec-value font-mono text-xs break-all" id="certFpSha256">--</div>
+                            <div class="spec-note">Deterministic one-way cryptographic hash of the raw certificate bytes.</div>
+                        </div>
+
+                        <div class="crypto-spec-box">
+                            <div class="spec-label">SHA-1 Fingerprint (Legacy Hash)</div>
+                            <div class="spec-value font-mono text-xs break-all" id="certFpSha1">--</div>
+                            <div class="spec-note">Legacy digest algorithm retained for backwards compatibility.</div>
+                        </div>
+                    </div>
+
+                    <!-- Subject Alternative Names (SANs) -->
+                    <div class="sans-container">
+                        <span class="sans-title">Subject Alternative Names (SANs):</span>
+                        <div class="sans-tags" id="certSansTags">
+                            <span class="san-tag">Loading SANs...</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ============================================================= -->
+        <!-- 4. Certificate Chain Visualization Section                    -->
+        <!-- ============================================================= -->
+        <section class="section chain-section" id="chainSection">
+            <div class="section-header">
+                <div class="section-title-wrapper">
+                    <span class="section-tag">Public Key Infrastructure (PKI)</span>
+                    <h2 class="section-title">Hierarchical Certificate Trust Chain</h2>
+                    <p class="section-desc">
+                        How web browsers establish trust by traversing digital signatures from the website certificate back to a trusted Root CA.
+                    </p>
+                </div>
+            </div>
+
+            <div class="chain-diagram-card card">
+                <div class="chain-flow-wrapper" id="chainFlowContainer">
+
+                    <!-- Level 1: Root CA -->
+                    <div class="chain-step-card tier-root">
+                        <div class="chain-step-badge">Level 1 &bull; Root CA</div>
+                        <div class="chain-step-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                            </svg>
+                        </div>
+                        <h4 class="chain-step-name" id="chainRootName">Root Certificate Authority (Root CA)</h4>
+                        <p class="chain-step-role" id="chainRootRole">
+                            Self-signed Trust Anchor pre-installed in OS/browser certificate store (e.g. GTS Root R1, DigiCert Root).
+                        </p>
+                        <div class="chain-step-meta">
+                            <span class="font-mono text-xs" id="chainRootSig">Digital Signature: Self-signed</span>
+                        </div>
+                    </div>
+
+                    <div class="chain-connector">
+                        <div class="connector-line"></div>
+                        <div class="connector-arrow">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <polyline points="19 12 12 19 5 12"></polyline>
+                            </svg>
+                        </div>
+                        <span class="connector-text">Digitally signs with private key</span>
+                    </div>
+
+                    <!-- Level 2: Intermediate CA -->
+                    <div class="chain-step-card tier-inter">
+                        <div class="chain-step-badge">Level 2 &bull; Intermediate CA</div>
+                        <div class="chain-step-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="9" cy="7" r="4"></circle>
+                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                            </svg>
+                        </div>
+                        <h4 class="chain-step-name" id="chainInterName">Intermediate Certificate Authority</h4>
+                        <p class="chain-step-role" id="chainInterRole">
+                            Acts as a proxy issuer to isolate the Root CA's private key from operational network exposure.
+                        </p>
+                        <div class="chain-step-meta">
+                            <span class="font-mono text-xs" id="chainInterSig">Signed by: Root CA</span>
+                        </div>
+                    </div>
+
+                    <div class="chain-connector">
+                        <div class="connector-line"></div>
+                        <div class="connector-arrow">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <polyline points="19 12 12 19 5 12"></polyline>
+                            </svg>
+                        </div>
+                        <span class="connector-text">Digitally signs website public key</span>
+                    </div>
+
+                    <!-- Level 3: Leaf Certificate -->
+                    <div class="chain-step-card tier-leaf">
+                        <div class="chain-step-badge">Level 3 &bull; End-Entity (Leaf)</div>
+                        <div class="chain-step-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                                <line x1="8" y1="21" x2="16" y2="21"></line>
+                                <line x1="12" y1="17" x2="12" y2="21"></line>
+                            </svg>
+                        </div>
+                        <h4 class="chain-step-name" id="chainLeafName">Website Certificate (*.google.com)</h4>
+                        <p class="chain-step-role" id="chainLeafRole">
+                            Issued specifically to the domain name. Binds the website's public key to its fully qualified domain name.
+                        </p>
+                        <div class="chain-step-meta">
+                            <span class="font-mono text-xs" id="chainLeafSig">Signed by: Intermediate CA</span>
+                        </div>
+                    </div>
+
+                    <div class="chain-connector">
+                        <div class="connector-line"></div>
+                        <div class="connector-arrow">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <polyline points="19 12 12 19 5 12"></polyline>
+                            </svg>
+                        </div>
+                        <span class="connector-text">Browser validates signatures up to Root</span>
+                    </div>
+
+                    <!-- Level 4: Client Web Browser -->
+                    <div class="chain-step-card tier-client">
+                        <div class="chain-step-badge">Level 4 &bull; Client Browser</div>
+                        <div class="chain-step-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polygon points="12 8 8 12 12 16 12 8"></polygon>
+                            </svg>
+                        </div>
+                        <h4 class="chain-step-name">User Browser / Operating System</h4>
+                        <p class="chain-step-role">
+                            Validates the chain. If any signature fails or the Root is unknown, the browser alerts: <em>"Connection is not private"</em>.
+                        </p>
+                        <div class="chain-step-meta">
+                            <span class="font-mono text-xs">Trust Established: HTTPS Secure (Green Lock)</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================= -->
+        <!-- 5. How HTTPS Works (Interactive TLS Handshake Flowchart)       -->
+        <!-- ============================================================= -->
+        <section class="section handshake-section" id="handshakeSection">
+            <div class="section-header">
+                <div class="section-title-wrapper">
+                    <span class="section-tag">Network Protocol Workflow</span>
+                    <h2 class="section-title">How HTTPS Works: The TLS Handshake</h2>
+                    <p class="section-desc">
+                        A step-by-step cryptographic walk-through showing how an insecure TCP channel is transformed into an encrypted, tamper-resistant tunnel.
+                    </p>
+                </div>
+            </div>
+
+            <div class="card handshake-card">
+                <div class="handshake-timeline">
+
+                    <!-- Step 1 -->
+                    <div class="handshake-step">
+                        <div class="step-marker">1</div>
+                        <div class="step-card">
+                            <div class="step-header">
+                                <span class="step-role">Client &rarr; Server</span>
+                                <h4>Client Hello</h4>
+                            </div>
+                            <p class="step-desc">
+                                The browser initiates the handshake by sending its supported <strong>TLS versions</strong> (e.g. TLS 1.3, 1.2),
+                                a list of supported <strong>cipher suites</strong>, and a random byte string called the <strong>Client Random</strong>.
+                            </p>
+                            <div class="step-crypto-badge">
+                                <span>Concept: Protocol Negotiation &amp; Random Nonce</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="handshake-step">
+                        <div class="step-marker">2</div>
+                        <div class="step-card">
+                            <div class="step-header">
+                                <span class="step-role">Server &rarr; Client</span>
+                                <h4>Server Hello &amp; Digital Certificate</h4>
+                            </div>
+                            <p class="step-desc">
+                                The web server selects the highest mutually supported TLS version and cipher suite (e.g., <code>TLS_AES_256_GCM_SHA384</code>),
+                                sends its own <strong>Server Random</strong>, and transmits its <strong>X.509 Digital Certificate</strong> containing its <strong>Public Key</strong>.
+                            </p>
+                            <div class="step-crypto-badge">
+                                <span>Concept: Authentication via Digital Certificate</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="handshake-step">
+                        <div class="step-marker">3</div>
+                        <div class="step-card">
+                            <div class="step-header">
+                                <span class="step-role">Client Validation</span>
+                                <h4>Certificate Verification &amp; Asymmetric Key Exchange</h4>
+                            </div>
+                            <p class="step-desc">
+                                The browser checks the certificate against its local trusted CA store (valid dates, SAN matching, signature validity).
+                                Both client and server exchange public key parameters using <strong>ECDHE (Elliptic Curve Diffie-Hellman Ephemeral)</strong>
+                                to compute a shared secret without ever transmitting it across the network!
+                            </p>
+                            <div class="step-crypto-badge">
+                                <span>Concept: Public-Key Cryptography &amp; Forward Secrecy</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 4 -->
+                    <div class="handshake-step">
+                        <div class="step-marker">4</div>
+                        <div class="step-card">
+                            <div class="step-header">
+                                <span class="step-role">Client &amp; Server</span>
+                                <h4>Derivation of Symmetric Session Keys</h4>
+                            </div>
+                            <p class="step-desc">
+                                Using the shared secret and random nonces, both parties independently derive matching
+                                <strong>Symmetric Session Keys</strong> (e.g., 256-bit AES keys). Asymmetric encryption is now complete!
+                            </p>
+                            <div class="step-crypto-badge">
+                                <span>Concept: Symmetric Key Derivation for High Speed</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 5 -->
+                    <div class="handshake-step">
+                        <div class="step-marker">5</div>
+                        <div class="step-card">
+                            <div class="step-header">
+                                <span class="step-role">Bidirectional</span>
+                                <h4>Finished &amp; Secure Symmetric Encrypted Communication</h4>
+                            </div>
+                            <p class="step-desc">
+                                Both send an encrypted <em>Finished</em> message verifying that the handshake was not tampered with.
+                                All subsequent HTTP requests and responses (passwords, cookies, HTML) are encrypted using fast symmetric
+                                <strong>AES-GCM</strong> or <strong>ChaCha20-Poly1305</strong>.
+                            </p>
+                            <div class="step-crypto-badge highlight-badge">
+                                <span>Result: Confidentiality &bull; Integrity &bull; Authentication</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================= -->
+        <!-- 6. Cryptography Concepts ("Understanding the Security")        -->
+        <!-- ============================================================= -->
+        <section class="section concepts-section" id="conceptsSection">
+            <div class="section-header">
+                <div class="section-title-wrapper">
+                    <span class="section-tag">Syllabus Guide</span>
+                    <h2 class="section-title">Understanding Core Cryptography Concepts</h2>
+                    <p class="section-desc">
+                        Simple, easy-to-understand explanations of the 10 fundamental Cryptography &amp; Network Security topics demonstrated in this project.
+                    </p>
+                </div>
+            </div>
+
+            <div class="concepts-grid">
+
+                <!-- Concept 1: HTTPS -->
+                <div class="concept-card">
+                    <div class="concept-num">01</div>
+                    <div class="concept-icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                    </div>
+                    <h3>HTTPS (HTTP Secure)</h3>
+                    <p>
+                        HTTPS is the secure version of HTTP. It wraps normal plaintext web communication inside an encrypted <strong>TLS/SSL tunnel</strong> on port 443, ensuring attackers cannot intercept passwords or modify web content.
+                    </p>
+                </div>
+
+                <!-- Concept 2: TLS -->
+                <div class="concept-card">
+                    <div class="concept-num">02</div>
+                    <div class="concept-icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        </svg>
+                    </div>
+                    <h3>TLS (Transport Layer Security)</h3>
+                    <p>
+                        The cryptographic protocol succeeding SSL. TLS provides three core security guarantees:
+                        <strong>Confidentiality</strong> (encryption), <strong>Integrity</strong> (tamper detection), and <strong>Authentication</strong> (identity verification).
+                    </p>
+                </div>
+
+                <!-- Concept 3: Digital Certificate -->
+                <div class="concept-card">
+                    <div class="concept-num">03</div>
+                    <div class="concept-icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                        </svg>
+                    </div>
+                    <h3>Digital Certificate (X.509)</h3>
+                    <p>
+                        An electronic passport for a website. It binds the server's public key to its domain name and is signed by a recognized Certificate Authority so browsers know the site is authentic.
+                    </p>
+                </div>
+
+                <!-- Concept 4: Public Key Cryptography -->
+                <div class="concept-card">
+                    <div class="concept-num">04</div>
+                    <div class="concept-icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="8" cy="8" r="6"></circle>
+                            <path d="M18 10v4"></path>
+                            <path d="M14 14l6 6"></path>
+                        </svg>
+                    </div>
+                    <h3>Public Key Cryptography (Asymmetric)</h3>
+                    <p>
+                        Uses a pair of keys: a <strong>Public Key</strong> (freely shared with the world) and a <strong>Private Key</strong> (kept secret by server). Data encrypted with the public key can only be decrypted with the private key.
+                    </p>
+                </div>
+
+                <!-- Concept 5: Symmetric Encryption -->
+                <div class="concept-card">
+                    <div class="concept-num">05</div>
+                    <div class="concept-icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="9" y1="9" x2="15" y2="15"></line>
+                            <line x1="15" y1="9" x2="9" y2="15"></line>
+                        </svg>
+                    </div>
+                    <h3>Symmetric Encryption</h3>
+                    <p>
+                        Uses a single shared key for both encryption and decryption (e.g. <strong>AES-256-GCM</strong>). Because symmetric ciphers are computationally much faster than asymmetric ciphers, they are used for bulk data transfer.
+                    </p>
+                </div>
+
+                <!-- Concept 6: Hashing -->
+                <div class="concept-card">
+                    <div class="concept-num">06</div>
+                    <div class="concept-icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="4" y1="9" x2="20" y2="9"></line>
+                            <line x1="4" y1="15" x2="20" y2="15"></line>
+                            <line x1="10" y1="3" x2="8" y2="21"></line>
+                            <line x1="16" y1="3" x2="14" y2="21"></line>
+                        </svg>
+                    </div>
+                    <h3>Cryptographic Hashing (SHA-256)</h3>
+                    <p>
+                        A one-way mathematical function transforming input data of any size into a unique fixed-length digest. Any modification to the data completely alters the hash (avalanche effect), enabling tamper detection.
+                    </p>
+                </div>
+
+                <!-- Concept 7: Digital Signature -->
+                <div class="concept-card">
+                    <div class="concept-num">07</div>
+                    <div class="concept-icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+                        </svg>
+                    </div>
+                    <h3>Digital Signature</h3>
+                    <p>
+                        A mathematical technique that guarantees authenticity and non-repudiation. A CA hashes the certificate details and encrypts that hash with its private key. Browsers decrypt it with the CA's public key to verify integrity.
+                    </p>
+                </div>
+
+                <!-- Concept 8: Certificate Authority (CA) -->
+                <div class="concept-card">
+                    <div class="concept-num">08</div>
+                    <div class="concept-icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+                        </svg>
+                    </div>
+                    <h3>Certificate Authority (CA)</h3>
+                    <p>
+                        A mutually trusted third-party organization (such as DigiCert, Let's Encrypt, or Google Trust Services) that verifies domain ownership and issues digital certificates forming the Root of Trust.
+                    </p>
+                </div>
+
+                <!-- Concept 9: Authentication -->
+                <div class="concept-card">
+                    <div class="concept-num">09</div>
+                    <div class="concept-icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="8.5" cy="7" r="4"></circle>
+                            <polyline points="17 11 19 13 23 9"></polyline>
+                        </svg>
+                    </div>
+                    <h3>Server Authentication</h3>
+                    <p>
+                        Confirms that the user is really connecting to the genuine server and not an impersonator. It prevents <strong>Man-in-the-Middle (MitM)</strong> attacks where an attacker tries to intercept unencrypted traffic.
+                    </p>
+                </div>
+
+                <!-- Concept 10: Confidentiality & Integrity -->
+                <div class="concept-card">
+                    <div class="concept-num">10</div>
+                    <div class="concept-icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M12 6v6l4 2"></path>
+                        </svg>
+                    </div>
+                    <h3>Confidentiality &amp; Integrity</h3>
+                    <p>
+                        <strong>Confidentiality:</strong> Only the sender and intended recipient can read the data.
+                        <strong>Integrity:</strong> Detects if any bit of data was altered or replayed by an attacker during transmission.
+                    </p>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ============================================================= -->
+        <!-- 7. Viva Voce Cheat Sheet & About Project                      -->
+        <!-- ============================================================= -->
+        <section class="section viva-section" id="vivaSection">
+            <div class="section-header">
+                <div class="section-title-wrapper">
+                    <span class="section-tag">Examiner Q&amp;A</span>
+                    <h2 class="section-title">Viva Voce Preparation &amp; Project Info</h2>
+                    <p class="section-desc">
+                        Common questions college professors and examiners ask during Cryptography project presentations.
+                    </p>
+                </div>
+            </div>
+
+            <div class="viva-qa-grid">
+
+                <div class="viva-item card">
+                    <div class="viva-q">
+                        <span class="q-badge">Q1</span>
+                        <h4>Why does HTTPS use both Asymmetric and Symmetric cryptography?</h4>
+                    </div>
+                    <div class="viva-a">
+                        <p>
+                            <strong>Asymmetric encryption</strong> (RSA/ECDHE) is computationally slow and resource-heavy, but it solves the key distribution problem (it allows two strangers to securely agree on a key).
+                            <strong>Symmetric encryption</strong> (AES) is extremely fast. Therefore, HTTPS uses asymmetric cryptography during the handshake to exchange keys, and symmetric cryptography for encrypting actual web data.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="viva-item card">
+                    <div class="viva-q">
+                        <span class="q-badge">Q2</span>
+                        <h4>What is Perfect Forward Secrecy (PFS)?</h4>
+                    </div>
+                    <div class="viva-a">
+                        <p>
+                            PFS ensures that even if an attacker steals the server's private key in the future, they <strong>cannot</strong> decrypt past recorded web sessions. Modern TLS achieves PFS using ephemeral Diffie-Hellman (ECDHE), where keys are uniquely generated per session and discarded immediately.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="viva-item card">
+                    <div class="viva-q">
+                        <span class="q-badge">Q3</span>
+                        <h4>What happens if a digital certificate expires?</h4>
+                    </div>
+                    <div class="viva-a">
+                        <p>
+                            Browsers check the <code>notAfter</code> timestamp against the local clock. If the current time is past expiration, the browser terminates trust and issues an SSL warning (e.g., <code>ERR_CERT_DATE_INVALID</code>), preventing users from entering credentials.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="viva-item card">
+                    <div class="viva-q">
+                        <span class="q-badge">Q4</span>
+                        <h4>Why are Intermediate CAs used instead of signing directly with Root CAs?</h4>
+                    </div>
+                    <div class="viva-a">
+                        <p>
+                            To protect the Root CA's private key. The Root CA remains completely offline and in a secure physical vault. If an Intermediate CA is ever compromised, it can be revoked without invalidating the entire global Root CA trust store.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Academic Project Summary Box -->
+            <div class="card academic-summary-card">
+                <div class="academic-summary-content">
+                    <h3>Academic Project Details</h3>
+                    <p>
+                        <strong>Project Title:</strong> HTTPS Security Analyzer: Analyzing Secure Web Communication and Digital Certificates<br>
+                        <strong>Subject:</strong> Cryptography and Network Security (CNS)<br>
+                        <strong>Backend Engine:</strong> Python <code>ssl</code> and <code>socket</code> standard libraries &amp; Flask framework<br>
+                        <strong>No Database &bull; No Paid APIs &bull; 100% Free &amp; Offline Standard Library Core</strong>
+                    </p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <p>&copy; College Cryptography Subject Project &bull; Built with Python Flask, SSL, and Vanilla Web Technologies.</p>
+            <p class="footer-sub">Demonstrates X.509 Digital Certificates, TLS 1.3 Handshake, and Cryptographic Scoring.</p>
+        </div>
+    </footer>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">Report JSON copied to clipboard!</div>
+
+    <!-- Main JavaScript -->
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
